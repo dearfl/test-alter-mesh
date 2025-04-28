@@ -4,12 +4,18 @@ use bevy::{
     gltf::GltfLoaderSettings,
     input::common_conditions::input_just_pressed,
     prelude::*,
-    render::{mesh::VertexAttributeValues, render_asset::RenderAssetUsages},
+    render::{
+        RenderApp,
+        batching::gpu_preprocessing::{GpuPreprocessingMode, GpuPreprocessingSupport},
+        mesh::VertexAttributeValues,
+        render_asset::RenderAssetUsages,
+    },
 };
 
 fn main() {
-    App::new()
-        .add_plugins(DefaultPlugins)
+    let mut app = App::new();
+
+    app.add_plugins(DefaultPlugins)
         .add_plugins(bevy_inspector_egui::bevy_egui::EguiPlugin {
             enable_multipass_for_primary_context: true,
         })
@@ -22,8 +28,14 @@ fn main() {
         .add_systems(
             Update,
             alter_mesh.run_if(input_just_pressed(KeyCode::Enter)),
-        )
-        .run();
+        );
+
+    app.sub_app_mut(RenderApp)
+        .insert_resource(GpuPreprocessingSupport {
+            max_supported_mode: GpuPreprocessingMode::None,
+        });
+
+    app.run();
 }
 
 #[derive(Component, Debug)]

@@ -1,0 +1,8 @@
+[package]
+name = "test_alter_mesh"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bevy = { version = "0.16.0", features = ["wayland"] }
+bevy-inspector-egui = "0.31.0"
